@@ -24,14 +24,14 @@ async def on_ready():
         f'{client.user.name} has connected to Discord!'
     )
 
-#@client.event
-#sync def on_member_join(member):
-#   channels = client.get_all_channels
-#    channel = channels['General']
-#    await discord.Message.channel.send(
-#        f'Hi {member.name}! Welcome to Kab\'s useless attempt at making a bot!'
-#    )
-#    print("Message Sent")   
+@client.event
+async def on_member_join(member):
+    channels = client.get_all_channels
+    channel = channels['General']
+    await discord.Message.channel.send(
+        f'Hi {member.name}! Welcome to Kab\'s useless attempt at making a bot!'
+    )
+    print("Message Sent")   
 
 @client.event
 async def on_message(message):
