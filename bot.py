@@ -9,6 +9,7 @@ intents.members = True
 intents.message_content = True
 intents.presences = True
 from dotenv import load_dotenv
+import tasks
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -39,34 +40,17 @@ async def on_member_join(member):
 
 @client.event
 async def on_message(message):
-    #print(message)
-    if message.author == client.user:
-        return
-    if message.content == "Hi":
-        #print(message)
-        await message.channel.send("Hello")
-        print("THERE! I said Hi! Are you proud of me!?")
-    if message.content.find('fact') != -1:
-        print("fact found")
-        limit = 1 
-        api_url = 'https://api.api-ninjas.com/v1/facts?limit={}'.format(limit)
-        response = requests.get(api_url, headers={'X-Api-Key': FACTS_API})
-        parsed = response.json()
-        if response.status_code == requests.codes.ok:
-            await message.channel.send("Did you know " + parsed[0]['fact'])
-            print("Okay random fact sent")
-        else:
-            print("Error:", response.status_code, response.text)
-    if message.content == "!joke":
-        limit = 1
-        api_url = 'https://api.api-ninjas.com/v1/jokes?limit={}'.format(limit)
-        response = requests.get(api_url, headers={'X-Api-Key': FACTS_API})
-        parsed = response.json()
-        if response.status_code == requests.codes.ok:
-            await message.channel.send(parsed[0]['joke'])
-        else:
-            print("Error:", response.status_code, response.text)
-
-    
+    match message.content:
+        case message.content.find("fact"):
+            print("Received Fact message: ", message.content)
+            fact(message)
+        case "!joke":
+            print("Received Joke message: ", message.content)
+            joke(message)
+        case "Hi":
+            print("Received Hi message: ", message.content)
+            hello(message)
+        case _:
+            print("Received message: ", message.content)
 
 client.run(TOKEN)
