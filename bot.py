@@ -1,8 +1,5 @@
 # bot.py
 import os
-import requests
-import re
-import json
 import discord
 intents = discord.Intents.default()
 intents.members = True
@@ -40,17 +37,23 @@ async def on_member_join(member):
 
 @client.event
 async def on_message(message):
-    match message.content:
-        case message.content.find("fact"):
-            print("Received Fact message: ", message.content)
-            fact(message)
-        case "!joke":
-            print("Received Joke message: ", message.content)
-            joke(message)
-        case "Hi":
-            print("Received Hi message: ", message.content)
-            hello(message)
-        case _:
-            print("Received message: ", message.content)
+    if message.author == client.user:
+        return
+    else:
+        facts = message.content.find("fact")
+        if facts == 0:
+            facts = message.content
+        match message.content:
+            case facts():
+                print("Received Fact message: ", message.content)
+                await tasks.fact(message)
+            case "!joke":
+                print("Received Joke message: ", message.content)
+                await tasks.joke(message)
+            case "Hi":
+                print("Received Hi message: ", message.content)
+                await tasks.hello(message)
+            case _:
+                print("Received message: ", message.content)
 
 client.run(TOKEN)
