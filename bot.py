@@ -16,6 +16,10 @@ BOT_PREFIX = os.getenv('BOT_PREFIX')
 
 client = discord.Client(intents=intents)
 
+    # Read the commands from the text file
+with open('commands.txt', 'r') as f:
+    commands = [line.strip() for line in f]
+
 @client.event
 async def on_ready():
     #guild = discord.utils.find(lambda g: g.name == GUILD, client.guilds)
@@ -37,23 +41,14 @@ async def on_member_join(member):
 
 @client.event
 async def on_message(message):
+    # Don't process the message if it was sent by the bot
     if message.author == client.user:
         return
-    else:
-        facts = message.content.find("fact")
-        if facts == 0:
-            facts = message.content
-        match message.content:
-            case facts():
-                print("Received Fact message: ", message.content)
-                await tasks.fact(message)
-            case "!joke":
-                print("Received Joke message: ", message.content)
-                await tasks.joke(message)
-            case "Hi":
-                print("Received Hi message: ", message.content)
-                await tasks.hello(message)
-            case _:
-                print("Received message: ", message.content)
+
+    # Check if the message contains any of the commands
+    for command in commands:
+        if command in message.content:
+            # Execute the corresponding function from the tasks module
+            await getattr(tasks, command[1:])(message)
 
 client.run(TOKEN)

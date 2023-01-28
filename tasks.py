@@ -11,8 +11,8 @@ FACTS_API = os.getenv('FACTS_API_ID')
 BOT_PREFIX = os.getenv('BOT_PREFIX')
 
 async def hello(message):
-        message.channel.send("Hello")
-        print("THERE! I said Hi! Are you proud of me!?")
+    await message.channel.send("Hello")
+    print("THERE! I said Hi! Are you proud of me!?")
 
 
 async def joke(message):
@@ -24,7 +24,7 @@ async def joke(message):
         await message.channel.send(parsed[0]['joke'])
     else:
         print("Error:", response.status_code, response.text)
-
+#asas
 async def fact(message):
     limit = 1 
     api_url = 'https://api.api-ninjas.com/v1/facts?limit={}'.format(limit)
