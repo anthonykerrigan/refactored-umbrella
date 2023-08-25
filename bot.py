@@ -7,6 +7,7 @@ intents.message_content = True
 intents.presences = True
 from dotenv import load_dotenv
 import tasks
+import ffxiv.news
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')

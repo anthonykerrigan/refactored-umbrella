@@ -2,6 +2,8 @@ import os
 import json
 import requests
 from dotenv import load_dotenv
+import pyxivapi
+#from pyxivapi import Filter, Sort
 import tasks
 
 load_dotenv()
@@ -9,6 +11,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 FACTS_API = os.getenv('FACTS_API_ID')
 BOT_PREFIX = os.getenv('BOT_PREFIX')
+LODESTONE_API_KEY = os.getenv('LODESTONE_TOKEN')
 
 async def hello(message):
     await message.channel.send("Hello")
@@ -35,3 +38,27 @@ async def fact(message):
         print("Okay random fact sent")
     else:
         print("Error:", response.status_code, response.text)
+
+async def news(message):
+    url="https://na.lodestonenews.com/feed/na.xml"
+    payload = {}
+    headers = {}
+    response = requests.request("GET", url, headers=headers, data=payload)
+    if response.status_code == requests.codes.ok:
+        await message.channel.send(response)
+        print("News Delivered")
+    else:
+        print("Error", response.status_code, response.text  )
+
+async def charactersearch(message): 
+    client = pyxivapi.XIVAPIClient(api_key=LODESTONE_API_KEY)
+    world = 'Sophia'
+    forename = 'Kabaneku'
+    surname = 'Lightstorm'
+    character = await client.character_search(
+        world=world,
+        forename=forename,
+        surname=surname
+    )
+    await message.channel.send(character)
+    await client.session.close()
