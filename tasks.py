@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import pyxivapi
 #from pyxivapi import Filter, Sort
 import tasks
+import random
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -60,5 +61,17 @@ async def charactersearch(message):
         forename=forename,
         surname=surname
     )
+async def roll(message):
+    content = message.content.split(' ')[1]  # Assuming the dice command is the second part of the message
+    parts = content.split('d')
+    if len(parts) != 2 or not parts[1].isdigit() or (parts[0] and not parts[0].isdigit()):
+        await message.channel.send("Invalid Command!")
+        return
+    number_of_dice = int(parts[0]) if parts[0] else 1
+    sides = int(parts[1])
+    rolled_value = [random.randint(1, sides) for _ in range(number_of_dice)]
+    total = sum(rolled_value)
+    await message.channel.send(f"You rolled *{rolled_value}* for a total of ***{total}***!")  # Fixed typo: channgel to channel
+    
     await message.channel.send(character)
     await client.session.close()

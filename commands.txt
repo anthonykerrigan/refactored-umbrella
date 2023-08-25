@@ -4,3 +4,4 @@
 !news
 !iam
 !charactersearch
+!roll
