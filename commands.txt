@@ -5,3 +5,5 @@
 !iam
 !charactersearch
 !roll
+!characters
+!characteradd
