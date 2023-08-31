@@ -89,15 +89,26 @@ async def characters(message):
 async def characteradd(message): 
     user_name = message.author.name 
     display_name = message.author.display_name if message.author.display_name != user_name else user_name
-    conn = sqlite3.connect('data/characters.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE user = ?', (user_name), )
-    db_user = cursor.fetchall()
-    if not db_user: 
-        cursor.execute ('INSERT INTO users (user, user_name, modified) VALUES (?,?,)')
+    user_input = message.content[len('!characteradd '):]
+    input_values = [value.strip() for value in user_input.split(',')]
+    if len(input_values) == 6:
+        conn = sqlite3.connect('data/characters.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT user_name FROM users WHERE user = ?', (user_name,) )
+        db_user = cursor.fetchall()
+        name = input_values[0]
+        race = input_values[1]
+        char_class = input_values[2]
+        level = input_values[3]
+        hp = input_values[4]
+        ac = input_values[5]
+        if not db_user: 
+            cursor.execute ('INSERT INTO users (user, user_name, modified) VALUES (?,?,date(CURRENT_TIMESTAMP))',(user_name, display_name))
+            conn.commit()
+        cursor.execute('INSERT INTO characters (name, race, class, level, hp, ac) VALUES(?,?,?,?,?,?)',(name, race, char_class, level, hp, ac))
         conn.commit()
-    cursor.execute('INSERT INTO user_characters (user_id, character_id) VALUES (?, (SELECT MAX(ID) +1 FROM characters))')
-    conn.commit()
-    cursor.execute('') #add character details. 
-
+        cursor.execute('INSERT INTO user_characters (user_id, character_id) VALUES (?, (SELECT ID FROM characters WHERE name = ?))',(user_name, name))
+        conn.commit()
+        await message.channel.send(f'I\'ve added {name} for you!')
+    else: await message.channel.send(f'Invallid command! Please ensure you use the correct format !characteradd Name, Race, Class, Level, HP, AC')
     ()
